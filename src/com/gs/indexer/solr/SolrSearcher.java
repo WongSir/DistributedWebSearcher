@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-//import org.apache.hadoop.hbase.ZooKeeperConnectionException;
+import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -32,31 +32,32 @@ public class SolrSearcher {
 	 */
 	public static final Set<PagePOJO> search(final String queryString,
 			final String serverurl) throws SolrServerException {
-		/*PageDAO dao = null;
+		PageDAO dao = null;
 		try {
 			dao = new PageDAOHBaseImpl("page");
 		} catch (ZooKeeperConnectionException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
 		SolrServer server = new HttpSolrServer(serverurl);
 		SolrQuery query = new SolrQuery(queryString);
 		query.setStart(0);
-		query.setRows(100);
+		query.setFields("content");
+		//query.setRows(100);
 		QueryResponse response = server.query(query);
 		SolrDocumentList docs = response.getResults();
 		Set<PagePOJO> result = new HashSet<PagePOJO>();
 		for (SolrDocument doc : docs) {
 			int id = Integer.valueOf((String) doc.getFieldValue("id"));
-			//result.add(dao.loadPage(id));
-			result.add(new PagePOJO("",id,"",""));
+			result.add(dao.loadPage(id));
+			//result.add(new PagePOJO("",id,"",""));
 		}
-		/*try {
+		try {
 			dao.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
 		return result;
 	}
 }
