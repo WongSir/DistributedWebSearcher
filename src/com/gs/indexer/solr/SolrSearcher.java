@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
+import org.apache.lucene.document.Field.Store;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -20,7 +21,7 @@ import com.gs.dao.impl.hbase.PageDAOHBaseImpl;
 import com.gs.model.PagePOJO;
 
 public class SolrSearcher {
-	//private static final Logger LOG = LoggerFactory.getLogger(SolrSearcher.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SolrSearcher.class);
 	/**
 	 * @author GS
 	 * @param queryString 查询字符串
@@ -41,17 +42,29 @@ public class SolrSearcher {
 			e.printStackTrace();
 		}
 		SolrServer server = new HttpSolrServer(serverurl);
-		SolrQuery query = new SolrQuery(queryString);
-		query.setStart(0);
-		query.setFields("content");
-		//query.setRows(100);
+		SolrQuery query = new SolrQuery("content:"+queryString);
+		//query.addSortField("content", SolrQuery.ORDER.asc);
+		/*query.setHighlight(true); // 开启高亮组件
+        query.addHighlightField("title");// 高亮字段
+        query.setHighlightSimplePre("<font color=\"red\">");// 标记
+        query.setHighlightSimplePost("</font>");
+        query.setHighlightSnippets(1);//结果分片数，默认为1
+        query.setHighlightFragsize(1000);//每个分片的最大长度，默认为100
+	query.setStart(0);
+		query.setRows(100);*/	
 		QueryResponse response = server.query(query);
 		SolrDocumentList docs = response.getResults();
+		
 		Set<PagePOJO> result = new HashSet<PagePOJO>();
+		String[] queryStrings = queryString.split(" ");
 		for (SolrDocument doc : docs) {
 			int id = Integer.valueOf((String) doc.getFieldValue("id"));
-			result.add(dao.loadPage(id));
-			//result.add(new PagePOJO("",id,"",""));
+			PagePOJO pojo = dao.loadPage(id);
+			for (String q : queryStrings) {
+				pojo.setContent(pojo.getContent().replaceAll(q,
+						"<font color=\"red\">" + q + "</font>"));
+			}
+			result.add(pojo);
 		}
 		try {
 			dao.close();

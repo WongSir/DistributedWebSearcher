@@ -26,13 +26,13 @@ public class SearchAction extends ActionSupport{
 	/**
 	 * @return the list
 	 */
-	public Set<PagePOJO> getList() {
+	public Set<PagePOJO> getSet() {
 		return set;
 	}
 	/**
 	 * @param list the list to set
 	 */
-	public void setList(Set<PagePOJO> list) {
-		this.set = list;
+	public void setSet(Set<PagePOJO> set) {
+		this.set = set;
 	}
 }
