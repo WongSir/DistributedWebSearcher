@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.gs.dao.PageDAO;
 import com.gs.dao.impl.hbase.PageDAOHBaseImpl;
 import com.gs.model.PagePOJO;
+import org.yecht.Data;
 
 public class SolrSearcher {
 	private static final Logger LOG = LoggerFactory.getLogger(SolrSearcher.class);
@@ -58,8 +59,9 @@ public class SolrSearcher {
 		Set<PagePOJO> result = new HashSet<PagePOJO>();
 		String[] queryStrings = queryString.split(" ");
 		for (SolrDocument doc : docs) {
-			int id = Integer.valueOf((String) doc.getFieldValue("id"));
-			PagePOJO pojo = dao.loadPage(id);
+//			int id = Integer.valueOf((String) doc.getFieldValue("id"));
+            String u = (String)doc.getFieldValue("url");
+			PagePOJO pojo = dao.loadPage(u);
 			for (String q : queryStrings) {
 				pojo.setContent(pojo.getContent().replaceAll(q,
 						"<font color=\"red\">" + q + "</font>"));
@@ -73,4 +75,9 @@ public class SolrSearcher {
 		}
 		return result;
 	}
+
+    public static void main(String[] args) throws SolrServerException {
+        Set<PagePOJO> set = SolrSearcher.search("中国","http://202.206.64.193:8080/solr");
+        System.out.println(set);
+    }
 }

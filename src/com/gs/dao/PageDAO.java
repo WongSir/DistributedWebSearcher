@@ -23,4 +23,5 @@ public interface PageDAO extends Closeable {
 	 */
 	public void save(Set<PagePOJO> set) throws IOException;
 	public void close() throws IOException;
+    public PagePOJO loadPage(String url);
 }

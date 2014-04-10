@@ -110,4 +110,30 @@ public class PageDAOHBaseImpl implements PageDAO {
 		}
 	}
 
+    @Override
+    public PagePOJO loadPage(String url) {
+        PagePOJO pojo = new PagePOJO();
+        try {
+            Get scan = new Get(url.getBytes());// 设置ID号
+            org.apache.hadoop.hbase.client.Result r = table.get(scan);
+            for (org.apache.hadoop.hbase.KeyValue keyValue : r.raw()) {
+                if (new String(keyValue.getFamily()).equals("content")) {
+                    pojo.setContent(new String(keyValue.getValue()));
+                } else if (new String(keyValue.getFamily()).equals("title")) {
+                    pojo.setTitle(new String(keyValue.getValue()));
+                }
+                pojo.setUrl(url);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                table.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return pojo;
+    }
+
 }

@@ -20,8 +20,8 @@ public final class HBasePool {
 	private HBasePool() throws ZooKeeperConnectionException {
 		Configuration conf = new Configuration();
 		conf.set("hbase.zookeeper.property.clientPort", "2181");
-		conf.set("hbase.zookeeper.quorum", "gs-pc");
-		conf.set("hbase.master", "gs-pc:60000");
+		conf.set("hbase.zookeeper.quorum", "localhost");
+		conf.set("hbase.master", "localhost:60000");
 		this.conf = conf;
 		connection = HConnectionManager.createConnection(conf);
 	}

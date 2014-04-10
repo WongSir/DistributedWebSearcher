@@ -20,7 +20,7 @@ public class SearchAction extends ActionSupport{
 		this.query = query;
 	}
 	public String search() throws SolrServerException, UnsupportedEncodingException{
-		set = SolrSearcher.search(query, "http://localhost:8888/solr");
+		set = SolrSearcher.search(query, "http://202.206.64.193:8080/solr");
 		return SUCCESS;
 	}
 	/**
