@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <base href="<%=basePath%>">
 
-<title>My JSP 'result.jsp' starting page</title>
+<title>result.jsp</title>
 
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
@@ -24,12 +24,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 
 <body>
-	<s:iterator value="list" id="list">
+	<div align="center">
+	<form action="search" target="_self"> 
+<input name="query" size="44" baiduSug=1 style="font-size: 18pt"  baiduSug="1" value="<s:property value="#parameters.query"/>">
+&nbsp;<input type="submit" value="好" style="font-size: 14pt">
+</form><hr>
+</div>
+	<s:iterator value="set" id="set">
 		<div>
-			<s:property value="#list.id" />
+			<a href="<s:property value="#set.url"/>" target=_blank><s:property value="#set.title" /></a><br>
+			<s:property value="#set.content" escape="false"/><br>			
 		</div>
-		<br>
+		<hr><br>
 	</s:iterator>
-	<s:debug></s:debug>
 </body>
 </html>
